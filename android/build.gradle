@@ -24,7 +24,7 @@ plugins {
 }
 
 group 'ir.cafebazaar.flutter_poolakey'
-version '2.2.0'
+version '2.2.0-1.0.0-alpha01'
 
 allprojects {
     repositories {
@@ -62,8 +62,8 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        versionCode 200200
-        versionName "2.2.0"
+        versionCode 2002001001
+        versionName "2.2.0-1.0.0-alpha01"
     }
 
     buildTypes {

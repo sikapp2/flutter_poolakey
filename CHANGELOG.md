@@ -1,3 +1,8 @@
+## 2.2.0-1.0.0-alpha01
+* Update gradle version to 7.5 #29
+* Fix illegal state exception on connect #23
+* Apply new versioning schema
+
 ## 2.2.0
 * Upgrade Poolakey dependency to 2.2.0
 * Update README.md
