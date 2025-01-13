@@ -13,7 +13,7 @@ project's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_poolakey: ^2.2.0
+  flutter_poolakey: ^2.2.0-1.0.0-alpha01
 ```
 
 Then run the below command to retrieve it:
