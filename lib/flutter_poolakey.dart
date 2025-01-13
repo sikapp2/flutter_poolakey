@@ -27,26 +27,26 @@ class FlutterPoolakey {
   /// You can also disable the local security check (only if you are using Bazaar's REST API)
   /// by passing null as [inAppBillingKey].
   ///
-  /// You should listen to [onConnectSuccess] callback to make sure FlutterPoolakey is connected successfully.
+  /// You should listen to [onSucceed] callback to make sure FlutterPoolakey is connected successfully.
   ///
-  /// You should listen to [onConnectFailed] callback to handle connect error.
+  /// You should listen to [onFailed] callback to handle connect error.
   ///
   /// You should listen to [onDisconnected] callback and call [FlutterPoolakey.connect] to reconnect again.
   ///
   /// This function may return an error, you should handle the error and check the stacktrace to resolve it.
   static Future<void> connect(String? inAppBillingKey,
-      {VoidCallback? onConnectSuccess,
-      VoidCallback? onConnectFailed,
+      {VoidCallback? onSucceed,
+      VoidCallback? onFailed,
       VoidCallback? onDisconnected}) async {
-    _registerConnectCallBack(onConnectSuccess, onConnectFailed, onDisconnected);
+    _registerConnectCallBack(onSucceed, onFailed, onDisconnected);
     await _channel
         .invokeMethod('connect', {'in_app_billing_key': inAppBillingKey});
   }
 
-  static void _registerConnectCallBack(VoidCallback? onConnectSuccess,
-      VoidCallback? onConnectFailed, VoidCallback? onDisconnected) {
-    if (onConnectSuccess == null &&
-        onConnectFailed == null &&
+  static void _registerConnectCallBack(VoidCallback? onConnectionSucceed,
+      VoidCallback? onConnectionFailed, VoidCallback? onDisconnected) {
+    if (onConnectionSucceed == null &&
+        onConnectionFailed == null &&
         onDisconnected == null) {
       return;
     }
@@ -54,11 +54,11 @@ class FlutterPoolakey {
       if (call.method == 'disconnected') {
         onDisconnected?.call();
         return Future.value(true);
-      } else if (call.method == 'connectSuccess') {
-        onConnectSuccess?.call();
+      } else if (call.method == 'connectionSucceed') {
+        onConnectionSucceed?.call();
         return Future.value(true);
-      } else if (call.method == 'connectFailed') {
-        onConnectFailed?.call();
+      } else if (call.method == 'connectionFailed') {
+        onConnectionFailed?.call();
         return Future.value(true);
       }
       throw StateError('method ${call.method} is not supported');

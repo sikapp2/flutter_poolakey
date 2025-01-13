@@ -68,24 +68,30 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       await FlutterPoolakey.connect(
         rsaKey,
-        onConnectSuccess: () => connected = true,
-        onConnectFailed: () => connected = false,
-        onDisconnected: () => showSnackBar("Poolakey disconnected!"),
+        onSucceed: () {
+          connected = true;
+          _updateState("Service: Connected");
+        },
+        onFailed: () {
+          connected = false;
+          _updateState("Service: Not Connected");
+        },
+        onDisconnected: () {
+          connected = false;
+          _updateState("Service: Not Connected");
+        },
       );
     } on Exception catch (e) {
       showSnackBar(e.toString());
-      setState(() {
-        status = "Service: Failed to Connect";
-      });
+      _updateState("Service: Failed to Connect");
     }
+  }
 
+  void _updateState(String message) {
     setState(() {
-      if (!connected) {
-        status = "Service: Not Connected";
-      } else {
-        status = "Service: Connected";
-      }
+      status = message;
     });
+    showSnackBar(message);
   }
 
   @override
