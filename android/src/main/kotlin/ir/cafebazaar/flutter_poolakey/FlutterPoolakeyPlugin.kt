@@ -46,13 +46,16 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             "version" -> {
                 getVersion(result);
             }
+
             "connect" -> {
                 val inAppBillingKey = call.argument<String>("in_app_billing_key")
                 connect(inAppBillingKey, result)
-            } 
+            }
+
             "disconnect" -> {
                 disconnect(result)
             }
+
             "purchase" -> {
                 startActivity(
                     activity = requireActivity,
@@ -63,6 +66,7 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     dynamicPriceToken = call.argument<String>("dynamicPriceToken"),
                 )
             }
+
             "subscribe" -> {
                 startActivity(
                     activity = requireActivity,
@@ -73,27 +77,34 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     dynamicPriceToken = call.argument<String>("dynamicPriceToken"),
                 )
             }
+
             "consume" -> {
                 val purchaseToken = call.argument<String>("purchase_token")!!
                 consume(purchaseToken, result)
             }
+
             "get_all_purchased_products" -> {
                 getAllPurchasedProducts(result)
             }
+
             "get_all_subscribed_products" -> {
                 getAllSubscribedProducts(result)
             }
+
             "get_in_app_sku_details" -> {
                 val skuIds = call.argument<List<String>>("sku_ids")!!
                 getInAppSkuDetails(skuIds, result)
             }
+
             "get_subscription_sku_details" -> {
                 val skuIds = call.argument<List<String>>("sku_ids")!!
                 getSubscriptionSkuDetails(skuIds, result)
             }
+
             "checkTrialSubscription" -> {
                 checkTrialSubscription(result)
             }
+
             else -> result.notImplemented()
         }
     }
@@ -114,10 +125,10 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
         paymentConnection = payment.connect {
             connectionSucceed {
-                result.success(true)
+                channel.invokeMethod("connectionSucceed", null)
             }
             connectionFailed {
-                result.error("CONNECTION_HAS_FAILED", it.toString(), null)
+                channel.invokeMethod("connectionFailed", it.toString(), null)
             }
             disconnected {
                 channel.invokeMethod("disconnected", null)
@@ -125,7 +136,7 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         }
     }
 
-    private fun disconnect(result: Result){
+    private fun disconnect(result: Result) {
         paymentConnection.disconnect()
         result.success(null)
     }
@@ -186,9 +197,12 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         }
         payment.checkTrialSubscription {
             checkTrialSubscriptionSucceed { trialSubscriptionInfo ->
-                result.success(hashMapOf(
-                    "isAvailable" to trialSubscriptionInfo.isAvailable,
-                    "trialPeriodDays" to trialSubscriptionInfo.trialPeriodDays))
+                result.success(
+                    hashMapOf(
+                        "isAvailable" to trialSubscriptionInfo.isAvailable,
+                        "trialPeriodDays" to trialSubscriptionInfo.trialPeriodDays
+                    )
+                )
             }
 
             checkTrialSubscriptionFailed {
@@ -288,7 +302,7 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         activityBinding = null
         purchaseCallback = null
         channel.setMethodCallHandler(null)
-        if(::paymentConnection.isInitialized){
+        if (::paymentConnection.isInitialized) {
             paymentConnection.disconnect()
         }
     }
